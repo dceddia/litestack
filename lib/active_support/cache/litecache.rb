@@ -25,14 +25,18 @@ module ActiveSupport
         key = key.to_s
         options = merged_options(options)
 
+        result = amount
         @cache.transaction do
           if (value = read(key, options))
             value = value.to_i + amount
             write(key, value, options)
+            result = value
           else
             write(key, amount, options)
+            result = amount
           end
         end
+        result
       end
 
       def decrement(key, amount = 1, options = nil)
